@@ -1,25 +1,346 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35327.3
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "snake1.0", "snake1.0\snake1.0.csproj", "{8ABF3E1E-24B6-46D4-A5AD-A622CB2BECA4}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8ABF3E1E-24B6-46D4-A5AD-A622CB2BECA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8ABF3E1E-24B6-46D4-A5AD-A622CB2BECA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8ABF3E1E-24B6-46D4-A5AD-A622CB2BECA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8ABF3E1E-24B6-46D4-A5AD-A622CB2BECA4}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {8A161C53-D973-44D1-A540-2B63F7898942}
-	EndGlobalSection
-EndGlobal
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Data;
+
+namespace snake1._0
+{
+    internal class Program
+    {
+        static int width = 20;
+        static int height = 20;
+        static int score = 0;
+        static bool gameOver = false;
+        static Random random = new Random();
+
+        static int snakeX;
+        static int snakeY;
+        static int fruitX;
+        static int fruitY;
+        static int[] tailX = new int[100];
+        static int[] tailY = new int[100];
+        static int tailLength = 0;
+        static int speed = 10;
+        static int direction = 0;
+
+        static void Main(string[] args)
+        {
+            Console.Title = "Snake Game";
+            Console.CursorVisible = false;
+
+            while (true) // Bucle infinito para reiniciar el juego
+            {
+                initializeGame();
+                DrawBorders();
+
+                while (!gameOver)
+                {
+                    if (Console.KeyAvailable)
+                    {
+                        HandleKeyPress(Console.ReadKey(true).Key);
+                    }
+
+                    MoveSnake();
+
+                    if (CheckCollision())
+                    {
+                        gameOver = true;
+                    }
+
+                    Draw();
+                    Thread.Sleep(1000 / speed);
+                }
+
+                ShowGameOverWindow(); // Ventana emergente al perder
+            }
+        }
+
+        static void initializeGame() //Le da los datos para iniciar el juego al metodo main
+        {
+            snakeX = width / 2;
+            snakeY = height / 2;
+
+            fruitX = random.Next(1, width - 1);
+            fruitY = random.Next(1, height - 1);
+
+            score = 0;
+            direction = 0;
+            tailLength = 0;
+            gameOver = false;
+        }
+
+        static void DrawBorders() //Dibuja los bordes
+        {
+            Console.Clear();
+
+            for (int i = 0; i < width + 2; i++)
+            {
+                Console.SetCursorPosition(i, 0);
+                Console.Write("#");
+
+                Console.SetCursorPosition(i, height + 1);
+                Console.Write("#");
+            }
+
+            for (int i = 0; i <= height + 1; i++)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.Write("#");
+
+                Console.SetCursorPosition(width + 1, i);
+                Console.Write("#");
+            }
+        }
+
+
+        static void Draw()
+        {
+            // Dibujar bordes (una sola vez, si es necesario)
+            DrawBorders();
+
+            // Dibujar fruta
+            Console.SetCursorPosition(fruitX + 1, fruitY + 1);
+            Console.Write("F");
+
+            // Dibujar cabeza de la serpiente
+            Console.SetCursorPosition(snakeX + 1, snakeY + 1);
+            Console.Write("O");
+
+            // Dibujar cola
+            for (int i = 0; i < tailLength; i++)
+            {
+                Console.SetCursorPosition(tailX[i] + 1, tailY[i] + 1);
+                Console.Write("o");
+            }
+
+            // Borrar la última parte de la cola (la que se movió)
+            if (tailLength > 0)
+            {
+                int clearX = tailX[tailLength] + 1;
+                int clearY = tailY[tailLength] + 1;
+                if (clearX >= 1 && clearX <= width && clearY >= 1 && clearY <= height)
+                {
+                    Console.SetCursorPosition(clearX, clearY);
+                    Console.Write(" ");
+                }
+            }
+
+            // Mostrar score
+            Console.SetCursorPosition(0, height + 3);
+            Console.Write($"Score: {score}    ");
+        }
+
+        //Comando de teclas
+        static void HandleKeyPress(ConsoleKey key)
+        {
+            switch (key)
+            {
+                case ConsoleKey.W: //Arriba
+                case ConsoleKey.UpArrow:
+                    if (direction != 2) direction = 0;
+                    break;
+
+                case ConsoleKey.D: //Derecha
+                case ConsoleKey.RightArrow:
+                    if (direction != 3) direction = 1;
+                    break;
+
+                case ConsoleKey.S: //Abajo
+                case ConsoleKey.DownArrow:
+                    if (direction != 0) direction = 2;
+                    break;
+
+                case ConsoleKey.A: //Izquierda
+                case ConsoleKey.LeftArrow:
+                    if (direction != 1) direction = 3; 
+                    break;
+
+                case ConsoleKey.Escape: //Cierra el programa
+                    if (ConfirmExitWindow())
+                    {
+                        Environment.Exit(0);
+                    }
+                    break;
+            }
+        }
+
+        static void MoveSnake()
+        {
+            int prevX = tailX[0];
+            int prevY = tailY[0];
+            int prev2X, prev2Y;
+
+            tailX[0] = snakeX;
+            tailY[0] = snakeY;
+
+            for (int i = 1; i < tailLength; i++)
+            {
+                prev2X = tailX[i];
+                prev2Y = tailY[i];
+                tailX[i] = prevX;
+                tailY[i] = prevY;
+                prevX = prev2X;
+                prevY = prev2Y;
+            }
+
+            switch (direction)
+            {
+                case 0: snakeY--; break;
+                case 1: snakeX++; break;
+                case 2: snakeY++; break;
+                case 3: snakeX--; break;
+            }
+
+            if (snakeX == 0 || snakeX == width - 1 || snakeY == 0 || snakeY == height)
+            {
+                gameOver = true;
+            }
+
+            if (snakeX == fruitX && snakeY == fruitY)
+            {
+                score += 10;
+                tailLength++;
+                fruitX = random.Next(1, width - 1);
+                fruitY = random.Next(1, height - 1);
+            }
+        }
+
+        //Verifica si el jugador ha colisionado con algo
+        static bool CheckCollision()
+        {
+            for (int i = 0; i < tailLength; i++)
+            {
+                if (tailX[i] == snakeX && tailY[i] == snakeY)
+                    return true;
+            }
+            return false;
+        }
+
+        // ventana de Game Over
+        static void ShowGameOverWindow()
+        {
+            Console.Clear();
+
+            string scoreText = $"Score: {score}";
+            int boxWidth = scoreText.Length + 6; // Espacio adicional a los lados
+            int boxHeight = 5;
+
+            int windowWidth = Console.WindowWidth;
+            int windowHeight = Console.WindowHeight;
+
+            int startX = Math.Max(0, (windowWidth - boxWidth) / 2);
+            int startY = Math.Max(0, (windowHeight - boxHeight) / 2);
+
+            for (int y = 0; y < boxHeight; y++)
+            {
+                Console.SetCursorPosition(startX, startY + y);
+                for (int x = 0; x < boxWidth; x++)
+                {
+                    if (y == 0)
+                    {
+                        if (x == 0) Console.Write('╔');
+                        else if (x == boxWidth - 1) Console.Write('╗');
+                        else Console.Write('═');
+                    }
+                    else if (y == boxHeight - 1)
+                    {
+                        if (x == 0) Console.Write('╚');
+                        else if (x == boxWidth - 1) Console.Write('╝');
+                        else Console.Write('═');
+                    }
+                    else
+                    {
+                        if (x == 0 || x == boxWidth - 1) Console.Write('║');
+                        else Console.Write(' ');
+                    }
+                }
+            }
+
+            // Escribir el mensaje centrado
+            int textX = startX + (boxWidth - scoreText.Length) / 2;
+            int textY = startY + boxHeight / 2;
+
+            Console.SetCursorPosition(textX, textY);
+            Console.Write(scoreText);
+
+            // Esperar entrada del usuario
+            while (true)
+            {
+                var key = Console.ReadKey(true).Key;
+                if (key == ConsoleKey.Enter)
+                {
+                    break; // Reinicia el juego
+                }
+                else if (key == ConsoleKey.Escape)
+                {
+                    ConfirmExitWindow(); // Llama a la ventana de confirmación
+                    break;
+                }
+            }
+        }
+
+        //Cerrar programa
+        static bool ConfirmExitWindow()
+        {
+            Console.Clear();
+
+            string line1 = "¿Seguro que quieres salir?";
+            string line2 = "s = Sí    n = No";
+            int boxWidth = Math.Max(line1.Length, line2.Length) + 6;
+            int boxHeight = 5;
+
+            int windowWidth = Console.WindowWidth;
+            int windowHeight = Console.WindowHeight;
+
+            int startX = Math.Max(0, (windowWidth - boxWidth) / 2);
+            int startY = Math.Max(0, (windowHeight - boxHeight) / 2);
+
+            for (int y = 0; y < boxHeight; y++)
+            {
+                Console.SetCursorPosition(startX, startY + y);
+                for (int x = 0; x < boxWidth; x++)
+                {
+                    if (y == 0)
+                    {
+                        if (x == 0) Console.Write('╔');
+                        else if (x == boxWidth - 1) Console.Write('╗');
+                        else Console.Write('═');
+                    }
+                    else if (y == boxHeight - 1)
+                    {
+                        if (x == 0) Console.Write('╚');
+                        else if (x == boxWidth - 1) Console.Write('╝');
+                        else Console.Write('═');
+                    }
+                    else
+                    {
+                        if (x == 0 || x == boxWidth - 1) Console.Write('║');
+                        else Console.Write(' ');
+                    }
+                }
+            }
+
+            // Escribir texto centrado
+            Console.SetCursorPosition(startX + (boxWidth - line1.Length) / 2, startY + 1);
+            Console.Write(line1);
+
+            Console.SetCursorPosition(startX + (boxWidth - line2.Length) / 2, startY + 2);
+            Console.Write(line2);
+
+            // Esperar respuesta del usuario
+            while (true)
+            {
+                ConsoleKey key = Console.ReadKey(true).Key;
+                if (key == ConsoleKey.S) return true;
+                if (key == ConsoleKey.N) return false;
+                if (key == ConsoleKey.Escape) Environment.Exit(0);
+            }
+        }
+    }
+}
+
+
+
