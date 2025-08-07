@@ -1,0 +1,7 @@
+C:\Users\rodne\source\repos\creacionDeArchivos\creacionDeArchivos\bin\Debug\creacionDeArchivos.exe.config
+C:\Users\rodne\source\repos\creacionDeArchivos\creacionDeArchivos\bin\Debug\creacionDeArchivos.exe
+C:\Users\rodne\source\repos\creacionDeArchivos\creacionDeArchivos\bin\Debug\creacionDeArchivos.pdb
+C:\Users\rodne\source\repos\creacionDeArchivos\creacionDeArchivos\obj\Debug\creacionDeArchivos.csproj.AssemblyReference.cache
+C:\Users\rodne\source\repos\creacionDeArchivos\creacionDeArchivos\obj\Debug\creacionDeArchivos.csproj.CoreCompileInputs.cache
+C:\Users\rodne\source\repos\creacionDeArchivos\creacionDeArchivos\obj\Debug\creacionDeArchivos.exe
+C:\Users\rodne\source\repos\creacionDeArchivos\creacionDeArchivos\obj\Debug\creacionDeArchivos.pdb
