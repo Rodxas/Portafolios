@@ -1,0 +1,6 @@
+C:\Users\rodne\source\repos\sistemaPOS\libreriaDll\bin\Debug\libreriaDll.dll
+C:\Users\rodne\source\repos\sistemaPOS\libreriaDll\bin\Debug\libreriaDll.pdb
+C:\Users\rodne\source\repos\sistemaPOS\libreriaDll\obj\Debug\libreriaDll.csproj.AssemblyReference.cache
+C:\Users\rodne\source\repos\sistemaPOS\libreriaDll\obj\Debug\libreriaDll.csproj.CoreCompileInputs.cache
+C:\Users\rodne\source\repos\sistemaPOS\libreriaDll\obj\Debug\libreriaDll.dll
+C:\Users\rodne\source\repos\sistemaPOS\libreriaDll\obj\Debug\libreriaDll.pdb

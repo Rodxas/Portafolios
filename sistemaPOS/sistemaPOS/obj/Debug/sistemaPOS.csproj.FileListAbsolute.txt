@@ -1,0 +1,13 @@
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\bin\Debug\sistemaPOS.exe.config
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\bin\Debug\sistemaPOS.exe
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\bin\Debug\sistemaPOS.pdb
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\obj\Debug\sistemaPOS.csproj.AssemblyReference.cache
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\obj\Debug\sistemaPOS.Form1.resources
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\obj\Debug\sistemaPOS.Properties.Resources.resources
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\obj\Debug\sistemaPOS.csproj.GenerateResource.cache
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\obj\Debug\sistemaPOS.csproj.CoreCompileInputs.cache
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\obj\Debug\sistemaPOS.exe
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\obj\Debug\sistemaPOS.pdb
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\bin\Debug\libreriaDll.dll
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\bin\Debug\libreriaDll.pdb
+C:\Users\rodne\source\repos\sistemaPOS\sistemaPOS\obj\Debug\sistemaPOS.csproj.Up2Date
